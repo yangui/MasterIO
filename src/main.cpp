@@ -2,7 +2,7 @@
 //MASTER - ARDUINO MEGA//-
 
 #include <Arduino.h>
-#define DEBUG
+#define DEBUG //ainda não utilizado
 
 //----------------------------RTC settings----------------------------------------//
   #include <DS3231.h>                     //Biblioteca para manipulação do DS3231
