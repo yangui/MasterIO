@@ -40,14 +40,17 @@
 
 //----------------------------Data log---------------------------------------//
   
-  //#include <SPI.h>
-  //#include <SD.h>
+  #include <SPI.h>
+  #include <SD.h>
       
   const int chipSelect = 4;
 
 //----------------------------I2c Comunication---------------------------------------//
 #include <I2Cyangui.h>
 comunication com;
+
+//----------------------------Watchdog---------------------------------------//
+#include <avr/wdt.h>
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
 
@@ -122,7 +125,7 @@ void setup()
   
   //---------------------------------SD Card-------------------------------------//
   
-  /*  
+  
   while (!Serial) {// wait for serial port to connect. Needed for native USB port only
     ; // wait for serial port to connect. Needed for native USB port only
   }
@@ -132,8 +135,11 @@ void setup()
     return; // don't do anything more:
   }
   Serial.println("card initialized.");
-  */
-  //----------------------------------------------------------------------//
+  
+  //----------------------------wATCHDOG---------------------------------------//
+
+  wdt_enable(WDTO_1S);
+  
 }
 
 void CallRTC()                      //Pega a data e hora do RTC e imprime no monitor Serial
@@ -165,7 +171,7 @@ void loop() {
   //----------------------------------------------------------------------//
  
   //-------------------------------SD_Card-------------------------------------//
-  /*
+  
   // Gravação de dados //
   File dataFile = SD.open("Data_SD.txt", FILE_WRITE);
 
@@ -181,7 +187,7 @@ void loop() {
   dataFile.print(":");
   dataFile.print(String(RTC_Data.second));    
   dataFile.print ("  ");
-  */
+  
   //----------------------------------------------------------------------//
   // Calculating Sun parameters  //
    
@@ -191,11 +197,10 @@ void loop() {
   Serial.print(Sun_Setpoint);
   Serial.print("\t");
 
-/*
   dataFile.print("Setpoint: ");
   dataFile.print(Sun_Setpoint);
   dataFile.print("\t");
-  */
+  
     
   //---------------------------------MPU_Read-------------------------------------//
   
@@ -271,10 +276,10 @@ void loop() {
   
   Serial.print("Roll_K: "); Serial.print(kalAngleX); Serial.print("\t");
   Serial.print("\t");
-  /*
+  
   dataFile.print("Angle: "); dataFile.print(kalAngleX); dataFile.println("\t");
   dataFile.close();
- */
+ 
 //----------------------------------------------------------------------//
   
 
@@ -297,6 +302,8 @@ void loop() {
   Wire.write(byte3);
   Wire.write(byte4);  
   Wire.endTransmission();       //Termina a transmissão
+
+
   
   //-------------------------------------------------------------------------//
 
@@ -305,7 +312,7 @@ void loop() {
 }
 
 
-  //-----------------------------------RTC_function----------------------------------//
+  //-----------------------------------Watchdog reset----------------------------------//
   
   
   
