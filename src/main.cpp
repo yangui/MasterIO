@@ -46,11 +46,13 @@
   const int chipSelect = 4;
 
 //----------------------------I2c Comunication---------------------------------------//
-#include <I2Cyangui.h>
-comunication com;
+//#include <I2Cyangui.h>
+//comunication com;
+  #include <I2C.h>
+  int ArduinoSlave = 44; //i2c scan endereço do Arduino Slave
 
 //----------------------------Watchdog---------------------------------------//
-#include <avr/wdt.h>
+//#include <avr/wdt.h>
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
 
@@ -59,7 +61,7 @@ void setup()
   //----------------------------I2C settings----------------------------------//
   
   Serial.begin(9600);
-  Wire.begin();
+  I2c.begin();
 
   // MPU Alternative Address //
   pinMode(AD0,OUTPUT);
@@ -74,7 +76,7 @@ void setup()
 
 
   #if ARDUINO >= 157
-  Wire.setClock(400000UL); // Set I2C frequency to 400kHz
+  I2c.setSpeed(400000UL); // Set I2C frequency to 400kHz
   #else
   TWBR = ((F_CPU / 400000UL) - 16) / 2; // Set I2C frequency to 400kHz
   #endif
@@ -84,11 +86,11 @@ void setup()
   i2cData[1] = 0x00;                                // Disable FSYNC and set 260 Hz Acc filtering, 256 Hz Gyro filtering, 8 KHz sampling
   i2cData[2] = 0x00;                                // Set Gyro Full Scale Range to ±250deg/s
   i2cData[3] = 0x00;                                // Set Accelerometer Full Scale Range to ±2g
-  while (com.i2cWritey(0x19, i2cData, 4, false));        // Write to all four registers at once
+  while (I2c.write(0x19, i2cData, 4, false));        // Write to all four registers at once
   dataI2c = 0x01;      
-  while (com.i2cWritey(0x6B, &dataI2c, 1, true));           // PLL with X axis gyroscope reference and disable sleep mode
+  while (I2c.write(0x6B, &dataI2c, 1, true));           // PLL with X axis gyroscope reference and disable sleep mode
 
-  while (com.i2cRead(0x75, i2cData, 1));
+  while (I2c.read(0x75, i2cData, 1));
   if (i2cData[0] != 0x69) {                         // Read "WHO_AM_I" register //0x69 for AD0 High default of solar sensor project
     Serial.print(F("Error reading sensor"));
     while (1);
@@ -99,7 +101,7 @@ void setup()
   
   //---------------------------kalman----------------------------------//
   // Set kalman and gyro starting angle //
-  while (com.i2cRead(0x3B, i2cData, 6));
+  while (I2c.read(0x3B, i2cData, 6));
   accX = (int16_t)((i2cData[0] << 8) | i2cData[1]);
   accY = (int16_t)((i2cData[2] << 8) | i2cData[3]);
   accZ = (int16_t)((i2cData[4] << 8) | i2cData[5]);
@@ -138,7 +140,7 @@ void setup()
   
   //----------------------------wATCHDOG---------------------------------------//
 
-  wdt_enable(WDTO_1S);
+  //wdt_enable(WDTO_1S);
   
 }
 
@@ -204,7 +206,7 @@ void loop() {
     
   //---------------------------------MPU_Read-------------------------------------//
   
-  while (com.i2cRead(0x3B, i2cData, 14)); // Update all the values //
+  while (I2c.read(0x3B, i2cData, 14)); // Update all the values //
   accX = (int16_t)((i2cData[0] << 8) | i2cData[1]);
   accY = (int16_t)((i2cData[2] << 8) | i2cData[3]);
   accZ = (int16_t)((i2cData[4] << 8) | i2cData[5]);
@@ -296,12 +298,12 @@ void loop() {
   byte byte4 = int(kalAngleX);
   byte byte3 = int(kalAngleX) >> 8;
   
-  Wire.beginTransmission(44); //endereço do arduino slave
-  Wire.write(byte1);
-  Wire.write(byte2);
-  Wire.write(byte3);
-  Wire.write(byte4);  
-  Wire.endTransmission();       //Termina a transmissão
+  //I2c.begin(44); //endereço do arduino slave
+  I2c.write(ArduinoSlave, byte1);
+  I2c.write(ArduinoSlave, byte2);
+  I2c.write(ArduinoSlave, byte3);
+  I2c.write(ArduinoSlave, byte4);  
+  I2c.end();       //Termina a transmissão
 
 
   
