@@ -60,21 +60,26 @@ void setup()
 {
   //----------------------------I2C settings----------------------------------//
   
+<<<<<<< Updated upstream
   Serial.begin(9600);
   I2c.begin();
 
+=======
+>>>>>>> Stashed changes
   // MPU Alternative Address //
-  pinMode(AD0,OUTPUT);
-  digitalWrite(AD0,HIGH);
+  //pinMode(AD0,OUTPUT);
+  //digitalWrite(AD0,HIGH);
 
-  
   //---------------------------------------------------------------------------//
+  Serial.begin(9600);
+  Wire.begin();
+  
 
   //---------------------------------RTC settings-----------------------------//
   rtc.begin();                           //Inicialização do RTC DS3231
   rtc.setDateTime(__DATE__, __TIME__);   //Configurando valores iniciais do RTC DS3231
 
-
+  //---------------------------------------------------------------------------//
   #if ARDUINO >= 157
   I2c.setSpeed(400000UL); // Set I2C frequency to 400kHz
   #else
