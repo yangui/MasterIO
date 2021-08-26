@@ -1,0 +1,12 @@
+{
+    "folders": [
+        {
+            "name": "MasterIO",
+            "path": ".."
+        },
+        {
+            "name": "SlaveIO",
+            "path": "..\\..\\SlaveIO"
+        }
+    ]
+}

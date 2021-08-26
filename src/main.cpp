@@ -46,11 +46,11 @@
   const int chipSelect = 4;
 
 //----------------------------I2c Comunication---------------------------------------//
-#include <I2Cyangui.h>
-comunication com;
+  #include <I2Cyangui.h>
+  comunication com;
 
 //----------------------------Watchdog---------------------------------------//
-#include <avr/wdt.h>
+  #include <avr/wdt.h>
 
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
 
@@ -63,7 +63,7 @@ void setup()
 
   // MPU Alternative Address //
   pinMode(AD0,OUTPUT);
-  digitalWrite(AD0,HIGH);
+  //digitalWrite(AD0,HIGH);
 
   
   //---------------------------------------------------------------------------//
@@ -89,7 +89,7 @@ void setup()
   while (com.i2cWritey(0x6B, &dataI2c, 1, true));           // PLL with X axis gyroscope reference and disable sleep mode
 
   while (com.i2cRead(0x75, i2cData, 1));
-  if (i2cData[0] != 0x69) {                         // Read "WHO_AM_I" register //0x69 for AD0 High default of solar sensor project
+  if (i2cData[0] != 0x68) {                         // Read "WHO_AM_I" register //0x69 for AD0 High default of solar sensor project
     Serial.print(F("Error reading sensor"));
     while (1);
   }
@@ -138,7 +138,7 @@ void setup()
   
   //----------------------------wATCHDOG---------------------------------------//
 
-  wdt_enable(WDTO_1S);
+  wdt_enable(WDTO_4S);
   
 }
 
@@ -171,7 +171,7 @@ void loop() {
   //----------------------------------------------------------------------//
  
   //-------------------------------SD_Card-------------------------------------//
-  
+  /*
   // Gravação de dados //
   File dataFile = SD.open("Data_SD.txt", FILE_WRITE);
 
@@ -187,7 +187,7 @@ void loop() {
   dataFile.print(":");
   dataFile.print(String(RTC_Data.second));    
   dataFile.print ("  ");
-  
+  */
   //----------------------------------------------------------------------//
   // Calculating Sun parameters  //
    
@@ -197,10 +197,11 @@ void loop() {
   Serial.print(Sun_Setpoint);
   Serial.print("\t");
 
+  /*
   dataFile.print("Setpoint: ");
   dataFile.print(Sun_Setpoint);
   dataFile.print("\t");
-  
+  */
     
   //---------------------------------MPU_Read-------------------------------------//
   
@@ -277,9 +278,10 @@ void loop() {
   Serial.print("Roll_K: "); Serial.print(kalAngleX); Serial.print("\t");
   Serial.print("\t");
   
+  /*
   dataFile.print("Angle: "); dataFile.print(kalAngleX); dataFile.println("\t");
   dataFile.close();
- 
+  */
 //----------------------------------------------------------------------//
   
 
