@@ -60,19 +60,16 @@ void setup()
 {
   //----------------------------I2C settings----------------------------------//
   
-<<<<<<< Updated upstream
   Serial.begin(9600);
   I2c.begin();
 
-=======
->>>>>>> Stashed changes
   // MPU Alternative Address //
   //pinMode(AD0,OUTPUT);
   //digitalWrite(AD0,HIGH);
 
   //---------------------------------------------------------------------------//
-  Serial.begin(9600);
-  Wire.begin();
+  //Serial.begin(9600);
+  //Wire.begin();
   
 
   //---------------------------------RTC settings-----------------------------//
