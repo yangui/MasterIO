@@ -43,7 +43,7 @@
   #include <SPI.h>
   #include <SD.h>
       
-  const int chipSelect = 4;
+  //const int chipSelect = 4;
 
 //----------------------------I2c Comunication---------------------------------------//
 //#include <I2Cyangui.h>
@@ -63,6 +63,9 @@ void setup()
   Serial.begin(9600);
   I2c.begin();
 
+   // MPU Alternative Address //
+  pinMode(AD0,OUTPUT);
+
   // MPU Alternative Address //
   //pinMode(AD0,OUTPUT);
   //digitalWrite(AD0,HIGH);
@@ -77,11 +80,17 @@ void setup()
   rtc.setDateTime(__DATE__, __TIME__);   //Configurando valores iniciais do RTC DS3231
 
   //---------------------------------------------------------------------------//
-  #if ARDUINO >= 157
-  I2c.setSpeed(400000UL); // Set I2C frequency to 400kHz
+    #if ARDUINO >= 157
+  Wire.setClock(10000UL); // Set I2C frequency to 10kHz
   #else
-  TWBR = ((F_CPU / 400000UL) - 16) / 2; // Set I2C frequency to 400kHz
+  TWBR = ((F_CPU / 10000UL) - 16) / 2; // Set I2C frequency to 10kHz
   #endif
+
+//  #if ARDUINO >= 157
+//  Wire.setClock(400000UL); // Set I2C frequency to 400kHz
+//  #else
+//  TWBR = ((F_CPU / 400000UL) - 16) / 2; // Set I2C frequency to 400kHz
+//  #endif
 
 
   i2cData[0] = 7;                                   // Set the sample rate to 1000Hz - 8kHz/(7+1) = 1000Hz
@@ -93,7 +102,7 @@ void setup()
   while (I2c.write(0x6B, &dataI2c, 1, true));           // PLL with X axis gyroscope reference and disable sleep mode
 
   while (I2c.read(0x75, i2cData, 1));
-  if (i2cData[0] != 0x69) {                         // Read "WHO_AM_I" register //0x69 for AD0 High default of solar sensor project
+  if (i2cData[0] != 0x68) {                         // Read "WHO_AM_I" register //0x69 for AD0 High default of solar sensor project
     Serial.print(F("Error reading sensor"));
     while (1);
   }
